@@ -31,10 +31,17 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     port: port,
-    open: true,
+    // open: true,
+    // hot: true,
+    // hotOnly: true,
     overlay: {
       warnings: false,
       errors: true
+    },
+    watchOptions: {
+      ignored: /node_modules/,
+      aggregateTimeout: 300,
+      poll: 1000
     },
     before: require('./mock/mock-server.js')
   },
@@ -42,11 +49,22 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    watch: true,
+    devtool: 'none',
     resolve: {
       alias: {
         '@': resolve('src')
       }
     }
+    // module: {
+    //   rules: [
+    //     {
+    //       test: /.js$/,
+    //       exclude: /node_modules/,
+    //       use: ['cache-loader', 'babel-loader']
+    //     }
+    //   ]
+    // }
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
@@ -88,7 +106,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
